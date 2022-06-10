@@ -1,0 +1,12 @@
+.header__nav {
+  display: flex;
+  column-gap: 24px;
+  align-items: baseline;
+}
+
+@media screen and (max-width: 560px) {
+  .header__nav {
+    display: grid;
+    justify-items: end;
+  }
+}
