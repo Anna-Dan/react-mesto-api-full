@@ -20,15 +20,15 @@ const app = express();
 
 app.use(bodyParser.json());
 
-mongoose // вариант для локальной докер разработки
-  .connect('mongodb://anna:dryanna@mongo:27017/mestodb?authSource=admin', {
-    useNewUrlParser: true,
-  });
-
-// mongoose // вариант для прохождения автотестов
-//   .connect('mongodb://localhost:27017/mestodb', {
+// mongoose // вариант для локальной докер разработки
+//   .connect('mongodb://anna:dryanna@mongo:27017/mestodb?authSource=admin', {
 //     useNewUrlParser: true,
 //   });
+
+mongoose // вариант для прохождения автотестов
+  .connect('mongodb://localhost:27017/mestodb', {
+    useNewUrlParser: true,
+  });
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
