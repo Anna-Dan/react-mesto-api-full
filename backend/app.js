@@ -9,6 +9,7 @@ const auth = require('./middlewares/auth');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const cors = require('./middlewares/cors');
 
 const {
   signUpValidation,
@@ -29,6 +30,8 @@ mongoose // вариант для прохождения автотестов
   .connect('mongodb://localhost:27017/mestodb', {
     useNewUrlParser: true,
   });
+
+app.use(cors);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

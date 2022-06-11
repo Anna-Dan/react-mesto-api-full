@@ -4,6 +4,14 @@ export class Api {
     this._baseUrl = baseUrl;
   }
 
+  _getHeaders() {
+    const jwt = localStorage.getItem('jwt');
+    return {
+      'Authorization': `Bearer ${jwt}`,
+      ...this._headers,
+    };
+  }
+
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
@@ -72,10 +80,9 @@ export class Api {
   }
 }
 const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-34",
+  baseUrl: "http://mesto.annadan.nomoredomains.xyz",
   headers: {
-    authorization: "9d2d2564-ddb0-415d-88e2-d41c280f2f09",
-    "Content-Type": "application/json",
+        "Content-Type": "application/json",
   },
 });
 
