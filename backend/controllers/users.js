@@ -10,7 +10,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.send({ users });
+      res.send({ data: users });
     })
     .catch(next);
 };
@@ -24,19 +24,24 @@ module.exports.getUser = (req, res, next) => {
           new NotFoundError('Пользователь по указанному _id не найден'),
         );
       }
-      return res.send({ getUser });
+      return res.send({
+        name: getUser.name,
+        about: getUser.about,
+        avatar: getUser.avatar,
+        _id: getUser._id,
+      });
     })
     .catch(next);
 };
 
 // GET /users/me - возвращает информацию о текущем пользователе
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById({ _id: req.user._id })
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         return next(new NotFoundError('Пользователь не найден'));
       }
-      return res.send({ user });
+      return res.send({ data: user });
     })
     .catch((err) => next(err));
 };
@@ -58,12 +63,12 @@ module.exports.createUser = (req, res, next) => {
       avatar,
       email,
       password: hash,
-    }).then(() => res.send({
-      data: {
-        name,
-        about,
-        avatar,
-        email,
+    }).then((user) => res.send({
+      user: {
+        email: user.email,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
       },
     })))
     .catch((err) => {
@@ -96,7 +101,11 @@ module.exports.updateUserInfo = (req, res, next) => {
           new NotFoundError('Пользователь с указанным _id не найден'),
         );
       }
-      return res.send({ updateUser });
+      return res.send({
+        name: updateUser.name,
+        about: updateUser.about,
+        _id: updateUser._id,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -123,7 +132,7 @@ module.exports.updateAvatar = (req, res, next) => {
           new NotFoundError('Пользователь с указанным _id не найден'),
         );
       }
-      return res.send({ updateUser });
+      return res.send({ avatar: updateUser.avatar, _id: updateUser._id });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
