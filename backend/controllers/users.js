@@ -10,7 +10,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      res.send({ data: users });
+      res.send({ users });
     })
     .catch(next);
 };
@@ -24,7 +24,7 @@ module.exports.getUser = (req, res, next) => {
           new NotFoundError('Пользователь по указанному _id не найден'),
         );
       }
-      return res.send({ data: getUser });
+      return res.send({ getUser });
     })
     .catch(next);
 };
@@ -36,7 +36,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (!user) {
         return next(new NotFoundError('Пользователь не найден'));
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => next(err));
 };
@@ -96,7 +96,7 @@ module.exports.updateUserInfo = (req, res, next) => {
           new NotFoundError('Пользователь с указанным _id не найден'),
         );
       }
-      return res.send({ data: updateUser });
+      return res.send({ updateUser });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -123,7 +123,7 @@ module.exports.updateAvatar = (req, res, next) => {
           new NotFoundError('Пользователь с указанным _id не найден'),
         );
       }
-      return res.send({ data: updateUser });
+      return res.send({ updateUser });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
