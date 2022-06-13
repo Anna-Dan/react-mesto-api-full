@@ -30,7 +30,19 @@ export const authorize = (password, email) => {
       password,
       email,
     }),
-  }).then((res) => checkResult(res));
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
+  })
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+    return data;
+  });
 };
 
 export const getContent = (token) => {

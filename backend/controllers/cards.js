@@ -40,7 +40,8 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Вы не можете удалить чужую карточку'));
       }
-      return card.remove()
+      return card
+        .remove()
         .then(() => res.send({ massage: 'Карточка успешно удалена' }));
     })
     .catch(next);
@@ -53,11 +54,18 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((cards) => {
-      if (!cards) {
+    .then((card) => {
+      if (!card) {
         return next(new NotFoundError('Передан несуществующий _id карточки'));
       }
-      return res.send({ data: cards });
+      return res.send({
+        name: card.name,
+        link: card.link,
+        owner: card.owner,
+        likes: card.likes,
+        _id: card._id,
+        createdAt: card.createdAt,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -74,11 +82,18 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((cards) => {
-      if (!cards) {
+    .then((card) => {
+      if (!card) {
         return next(new NotFoundError('Передан несуществующий _id карточки'));
       }
-      return res.send({ data: cards });
+      return res.send({
+        name: card.name,
+        link: card.link,
+        owner: card.owner,
+        likes: card.likes,
+        _id: card._id,
+        createdAt: card.createdAt,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

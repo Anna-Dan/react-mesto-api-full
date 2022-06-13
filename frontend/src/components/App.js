@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
-import api from "../utils/Api";
-import * as apiAuth from "../utils/apiAuth.js";
+import api from '../utils/Api';
+import * as apiAuth from '../utils/apiAuth.js';
 
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import ProtectedRoute from "./ProtectedRoute";
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import ProtectedRoute from './ProtectedRoute';
 
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import ImagePopup from "./ImagePopup";
-import Login from "./Login";
-import Register from "./Register";
-import InfoTooltip from "./InfoTooltip";
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+import PopupWithForm from './PopupWithForm';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import ImagePopup from './ImagePopup';
+import Login from './Login';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -29,14 +29,14 @@ function App() {
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const history = useHistory();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [register, setRegister] = useState(false);
 
   //лайки
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     api
-      .changeLike(card._id, isLiked)
+      .changeLike(card, isLiked)
       .then((newCard) => {
         setCards((prevCards) =>
           prevCards.map((c) => (c._id === card._id ? newCard : c))
@@ -129,19 +129,19 @@ function App() {
   }
 
   function handleOverlayClose(e) {
-    if (e.target.classList.contains("popup")) {
+    if (e.target.classList.contains('popup')) {
       closeAllPopups();
     }
   }
 
   useEffect(() => {
     const closeByEscape = (e) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         closeAllPopups();
       }
     };
-    document.addEventListener("keydown", closeByEscape);
-    return () => document.removeEventListener("keydown", closeByEscape);
+    document.addEventListener('keydown', closeByEscape);
+    return () => document.removeEventListener('keydown', closeByEscape);
   }, []);
 
   /* Авторизация */
@@ -155,7 +155,7 @@ function App() {
       .then((res) => {
         if (res.data) {
           handleInfoTooltipOpen(true);
-          history.push("/sign-in");
+          history.push('/sign-in');
         }
       })
       .catch((err) => {
@@ -170,7 +170,7 @@ function App() {
       .then((res) => {
         if (res.token) {
           handleLogin();
-          history.push("/");
+          history.push('/');
         }
       })
       .catch((err) => {
@@ -180,15 +180,15 @@ function App() {
   }
 
   function handleTokenCheck() {
-    const token = localStorage.getItem("token");
-    if (localStorage.getItem("token")) {
+    const token = localStorage.getItem('token');
+    if (localStorage.getItem('token')) {
       apiAuth
         .getContent(token)
         .then((res) => {
           if (res) {
             setEmail(res.data.email);
             setLoggedIn(true);
-            history.push("/");
+            history.push('/');
           }
         })
         .catch((err) => {
@@ -204,8 +204,8 @@ function App() {
     if (setLoggedIn) {
       Promise.all([api.getInitialCards(), api.getProfileInfo()])
         .then(([cards, user]) => {
-          setCards(cards);
-          setCurrentUser(user);
+          setCards(cards.data);
+          setCurrentUser(user.data);
         })
         .catch((err) => {
           console.log(err);
@@ -214,28 +214,28 @@ function App() {
   }, []);
 
   function onSingOut() {
-    localStorage.removeItem("token");
-    setEmail("");
+    localStorage.removeItem('token');
+    setEmail('');
     setLoggedIn(false);
-    history.push("/sign-in");
+    history.push('/sign-in');
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
-        <div className="page__container">
+      <div className='page'>
+        <div className='page__container'>
           <Header handleLogOut={onSingOut} email={email} />
           <Switch>
-            <Route path="/sign-up">
+            <Route path='/sign-up'>
               <Register handleRegisterSubmit={handleRegisterSubmit} />
             </Route>
 
-            <Route path="/sign-in">
+            <Route path='/sign-in'>
               <Login handleLoginSubmit={handleLoginSubmit} />
             </Route>
             <ProtectedRoute
               exact
-              path="/"
+              path='/'
               component={Main}
               loggedIn={loggedIn}
               onEditAvatar={handleEditAvatarClick}
@@ -272,9 +272,9 @@ function App() {
           />
 
           <PopupWithForm
-            title="Вы уверены?"
-            name="delete"
-            buttonText="Да"
+            title='Вы уверены?'
+            name='delete'
+            buttonText='Да'
             onClose={closeAllPopups}
             handleOverlayClose={handleOverlayClose}
           />
@@ -293,7 +293,6 @@ function App() {
           />
         </div>
       </div>
-      );
     </CurrentUserContext.Provider>
   );
 }
