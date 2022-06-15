@@ -211,7 +211,7 @@ function App() {
     if (setLoggedIn) {
       Promise.all([api.getInitialCards(), api.getProfileInfo()])
         .then(([cards, user]) => {
-          setCards(cards);
+          setCards(cards.data);
           setCurrentUser(user.data);
         })
         .catch((err) => {
