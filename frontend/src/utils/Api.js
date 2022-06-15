@@ -80,7 +80,7 @@ export class Api {
   }
 }
 const api = new Api({
-  baseUrl: 'http://api.mesto.annadan.nomoredomains.xyz',
+  baseUrl: 'https://api.mesto.annadan.nomoredomains.xyz',
   headers: {
     'Content-Type': 'application/json',
   },
