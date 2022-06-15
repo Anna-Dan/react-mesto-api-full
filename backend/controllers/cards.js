@@ -4,12 +4,21 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 // GET /cards — запрос на все карточки
-module.exports.getCards = (req, res, next) => {
-  Card.find({})
-    .then((cards) => {
-      res.send({ cards });
-    })
-    .catch(next);
+// module.exports.getCards = (req, res, next) => {
+//   Card.find({})
+//     .then((cards) => {
+//       res.send({ cards });
+//     })
+//     .catch(next);
+// };
+
+module.exports.getCards = async (req, res, next) => {
+  try {
+    const allCards = await Card.find({});
+    res.status(200).send(allCards);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // POST /cards — создать карточку
