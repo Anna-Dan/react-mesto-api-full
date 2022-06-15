@@ -69,7 +69,7 @@ function App() {
         setCurrentUser({
           ...currentUser,
           name: res.name,
-          about: res.about
+          about: res.about,
         });
         closeAllPopups();
       })
@@ -85,7 +85,7 @@ function App() {
       .then((res) => {
         setCurrentUser({
           ...currentUser,
-          avatar: res.avatar
+          avatar: res.avatar,
         });
         closeAllPopups();
       })
@@ -152,15 +152,12 @@ function App() {
   }, []);
 
   /* Авторизация */
-  function handleLogin() {
-    setLoggedIn(true);
-  }
 
   function handleRegisterSubmit(password, email) {
     apiAuth
       .register(password, email)
       .then((res) => {
-        if (res.data) {
+        if (res) {
           handleInfoTooltipOpen(true);
           history.push('/sign-in');
         }
@@ -172,11 +169,12 @@ function App() {
   }
 
   function handleLoginSubmit(password, email) {
-    apiAuth
+   return apiAuth
       .authorize(password, email)
       .then((res) => {
         if (res.token) {
-          handleLogin();
+          localStorage.setItem('token', res.token);
+          setLoggedIn(true);
           history.push('/');
         }
       })
@@ -188,11 +186,11 @@ function App() {
 
   function handleTokenCheck() {
     const token = localStorage.getItem('token');
-    if (localStorage.getItem('token')) {
+    if (token) {
       apiAuth
         .getContent(token)
         .then((res) => {
-          if (res) {
+          if (res.data) {
             setEmail(res.data.email);
             setLoggedIn(true);
             history.push('/');
@@ -218,7 +216,7 @@ function App() {
           console.log(err);
         });
     }
-  }, []);
+  }, [loggedIn]);
 
   function onSingOut() {
     localStorage.removeItem('token');

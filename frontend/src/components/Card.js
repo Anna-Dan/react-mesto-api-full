@@ -22,7 +22,7 @@ function Card(props) {
     <li className='elements__card'>
       <button
         type='button'
-        className={cardDeleteButtonClassName}
+        className={'elements__delete-button'}
         title='Удалить'
         aria-label='Удалить карточку'
         onClick={handleDeleteClick}
