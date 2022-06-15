@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import api from '../utils/Api';
 import * as apiAuth from '../utils/apiAuth.js';
@@ -169,7 +169,7 @@ function App() {
   }
 
   function handleLoginSubmit(password, email) {
-   return apiAuth
+    return apiAuth
       .authorize(password, email)
       .then((res) => {
         if (res.token) {
@@ -206,10 +206,10 @@ function App() {
   }, [loggedIn]);
 
   useEffect(() => {
-    if (setLoggedIn) {
+    if (loggedIn) {
       Promise.all([api.getInitialCards(), api.getProfileInfo()])
         .then(([cards, user]) => {
-          setCards(cards.data);
+          setCards(cards.data.reverse());
           setCurrentUser(user.data);
         })
         .catch((err) => {
@@ -251,6 +251,13 @@ function App() {
               onCardLike={handleCardLike}
               onCardDeleteClick={handleCardDelete}
             ></ProtectedRoute>
+            <Route>
+              {loggedIn ? (
+                <Redirect exact to='/' />
+              ) : (
+                <Redirect to='/sign-in' />
+              )}
+            </Route>
           </Switch>
 
           <Footer />
